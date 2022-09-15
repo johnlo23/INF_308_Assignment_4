@@ -31,9 +31,51 @@ def print_library(books, available, borrowed):
         # Borrowed list may not have same number of items as book list
         # so use try to handle index errors
         try:
-            print({borrowed[i]})
+            print(f"{borrowed[i]}")
         except IndexError:
             print()
+
+
+# Print action menu
+def print_menu():
+    print('Choose an action:')
+    print('- - - - - - - - - -')
+    print('(B) Borrow a book')
+    print('(R) Return a book')
+    print('(S) Start over')
+    print('(Q) Quit')
+
+
+# Get user action choice
+def get_user_choice():
+    user_input = input('Type the letter of your choice and hit enter: ')
+    user_input = user_input.upper()
+    return user_input
+
+# Get book number
+def get_book_number(action):
+    if action == 'B':
+        action_type = 'borrow'
+    else:
+        action_type = 'return'
+    action_choice = input(f'Enter the number of the book to {action_type} and hit enter: ')
+    # Add error check
+    try:
+        action_choice = int(action_choice)
+    except ValueError:
+        print()
+    return action_choice
+
+
+# Borrow a book
+def move_book(from_list, to_list):
+    book_number = get_book_number('B')
+    try:
+        to_list.append(from_list.pop(book_number - 1))
+    except IndexError:
+        print()
+    to_list.sort()
+
 
 
 # Welcome message
@@ -52,5 +94,26 @@ available_list = book_list.copy()
 # Create empty list of borrowed books
 borrowed_list = list()
 
-# Print library
-print_library(book_list, available_list, borrowed_list)
+# Print library and message until user quits
+while True:
+    # Print library
+    print_library(book_list, available_list, borrowed_list)
+    print()
+
+    # Print action menu
+    print_menu()
+
+    user_choice = get_user_choice()
+    if user_choice == 'B':
+        move_book(available_list, borrowed_list)
+    elif user_choice == 'R':
+        move_book(borrowed_list, available_list)
+    elif user_choice == 'S':
+        available_list = book_list.copy()
+        borrowed_list.clear()
+    elif user_choice == 'Q':
+        break
+
+    print()
+
+print("Goodbye!")
