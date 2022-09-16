@@ -16,28 +16,40 @@ def get_list_from_file(file_name):
     return name_list
 
 
+# Get the maximum of the length of two lists
+def get_max_list_len(list1, list2):
+    return max(len(list1), len(list2))
+
+
 # Print Library to screen
-def print_library(available, borrowed, num_books):
+def print_library(available, borrowed):
     # print Available and Borrowed lists side-by-side
     print()
     print('Available books' + ' ' * 19 + 'Borrowed books')
     print('---------------' + ' ' * 19 + '--------------')
 
+    num_books = get_max_list_len(available, borrowed)
     # Loop through available book list
     for i in range(0, num_books):
-        # Print book number (Index + 1)
-        print(f'{i+1}. ', end='')
-        # Available list may not have same number of items as num_books
+        # Two lists may not have the same number of books
         # so use try to handle index errors
         try:
+            # Attempt to refer to the index i in the list
+            available[i]
+            # Print book number (Index + 1)
+            print(f'{i + 1}. ', end='')
             print(f'{available[i]}' + ' '*((2-len(str(i+1)))+30-len(available[i])), end='')
         except IndexError:
-            print(' '*((2-len(str(i+1)))+30), end='')
+            # Just add spaces for formatting if no entry on this line
+            print(' '*((2-len(str(i+1)))+33), end='')
 
-        print(f'{i + 1}. ', end='')
-        # Borrowed list may not have same number of items as num_books
+        # Two lists may not have the same number of books
         # so use try to handle index errors
         try:
+            # Attempt to refer to the index i in the list
+            borrowed[i]
+            # Print book number (Index + 1)
+            print(f'{i + 1}. ', end='')
             print(f'{borrowed[i]}')
         except IndexError:
             print()
@@ -49,7 +61,8 @@ def print_menu():
     print('- - - - - - - - - -')
     print('(B) Borrow a book')
     print('(R) Return a book')
-    print('(S) Start over (Return All)')
+    print('(A) Add (donate) a Book')
+    print('(S) Start over')
     print('(Q) Quit')
 
 
@@ -132,6 +145,20 @@ def move_book(from_list, to_list, action):
     to_list.sort()
 
 
+# Add a book to the borrow list
+def add_book(book_list):
+    print()
+    print('Thank you for donating!')
+    while True:
+        book_name = input('What is the title of this book? ')
+        if len(book_name) > 0:
+            book_list.append(book_name)
+            break
+        else:
+            print('Please type in the title of your book.')
+    book_list.sort()
+
+
 # Welcome message
 welcome_message = 'The Classic Fiction Lending Library\n' \
     '- - - - - - - - - - - - - - - - - - \n' \
@@ -151,7 +178,7 @@ borrowed_list = list()
 # Print library and message until user quits
 while True:
     # Print library
-    print_library(available_list, borrowed_list, len(book_list))
+    print_library(available_list, borrowed_list)
     print()
 
     # Print action menu
@@ -174,6 +201,9 @@ while True:
             else:
                 move_book(borrowed_list, available_list, user_choice)
                 break
+        elif user_choice == 'A':
+            add_book(available_list)
+            break
         elif user_choice == 'S':
             available_list = book_list.copy()
             borrowed_list.clear()
