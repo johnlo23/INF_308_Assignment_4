@@ -4,6 +4,7 @@
 
 import random
 
+
 # Get list of items from text file
 def get_list_from_file(file_name):
     # File is one book per line
@@ -25,33 +26,30 @@ def get_max_list_len(list1, list2):
 def print_library(available, borrowed):
     # print Available and Borrowed lists side-by-side
     print()
-    print('Available books' + ' ' * 19 + 'Borrowed books')
-    print('---------------' + ' ' * 19 + '--------------')
+    print('Available books' + ' ' * 20 + 'Borrowed books')
+    print('---------------' + ' ' * 20 + '--------------')
 
+    # Get the list length of the longest list to use in the print loop
     num_books = get_max_list_len(available, borrowed)
+
     # Loop through available book list
     for i in range(0, num_books):
-        # Two lists may not have the same number of books
-        # so use try to handle index errors
-        try:
-            # Attempt to refer to the index i in the list
-            available[i]
-            # Print book number (Index + 1)
+        # Two lists may not have the same number of books, so where not matched
+        # in one list, print blank space as filler
+        if i in range(0, len(available)):
             print(f'{i + 1}. ', end='')
-            print(f'{available[i]}' + ' '*((2-len(str(i+1)))+30-len(available[i])), end='')
-        except IndexError:
+            print(f'{available[i]}' + ' ' * ((2 - len(str(i + 1))) + 30 - len(available[i])), end='')
+        else:
             # Just add spaces for formatting if no entry on this line
-            print(' '*((2-len(str(i+1)))+33), end='')
+            print(' ' * ((2 - len(str(i + 1))) + 33), end='')
 
-        # Two lists may not have the same number of books
-        # so use try to handle index errors
-        try:
-            # Attempt to refer to the index i in the list
-            borrowed[i]
+        # Two lists may not have the same number of books, so skip printing
+        # index number if available book is blank
+        if i in range(0, len(borrowed)):
             # Print book number (Index + 1)
-            print(f'{i + 1}. ', end='')
+            print(f' {i + 1}. ', end='')
             print(f'{borrowed[i]}')
-        except IndexError:
+        else:
             print()
 
 
@@ -69,6 +67,7 @@ def print_menu():
 # Convert string to an Integer
 def to_int(string):
     try:
+        # Attempt convert to float first in case user used a decimal point
         float_val = float(string)
         int_val = int(float_val)
     except ValueError:
@@ -80,6 +79,7 @@ def to_int(string):
 # Get user action choice
 def get_user_choice():
     user_input = input('Type the letter of your choice and hit <enter>: ')
+    # Convert all letter to Upper Case to make if statements simpler
     user_input = user_input.upper()
 
     return user_input
@@ -87,6 +87,7 @@ def get_user_choice():
 
 # Chose a random book from the list
 def get_random_book(from_list):
+    # Upper limit of random range will be length of the list
     list_len = len(from_list)
     if list_len > 0:
         return random.randrange(0, list_len)
@@ -146,17 +147,19 @@ def move_book(from_list, to_list, action):
 
 
 # Add a book to the borrow list
-def add_book(book_list):
+def add_book(to_list):
     print()
     print('Thank you for donating!')
+    # Continue loop until user enters a book name
     while True:
         book_name = input('What is the title of this book? ')
+        # Verify user typed at least one character
         if len(book_name) > 0:
-            book_list.append(book_name)
+            to_list.append(book_name)
             break
         else:
             print('Please type in the title of your book.')
-    book_list.sort()
+    to_list.sort()
 
 
 # Welcome message
@@ -175,7 +178,7 @@ available_list = book_list.copy()
 # Create empty list of borrowed books
 borrowed_list = list()
 
-# Print library and message until user quits
+# Print library and menu until user quits
 while True:
     # Print library
     print_library(available_list, borrowed_list)
