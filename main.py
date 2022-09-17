@@ -109,16 +109,18 @@ def get_book_number(action):
         # Ask user for book number
         action_choice = input(f"Type the number of the book to {action_type(action)} " 
                               "or 'R' for random, then hit <enter> (blank or 0 to exit): ")
-        # Use try to handle invalid (non-integer) input from user
+        # If user chooses Random, set value to -1 and break
         if action_choice.upper() == 'R':
             action_choice = -1
             break
+
+        action_choice = to_int(action_choice)
+
+        # User must choose a book number of zero or greater
+        if action_choice < 0:
+            print(f'Please type a book number currently on the {action_type(action)} list.')
         else:
-            try:
-                action_choice = to_int(action_choice)
-                break
-            except ValueError:
-                print(f'Please type a book number currently on the {action_type(action)} list.')
+            break
 
     return action_choice
 
